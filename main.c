@@ -6,13 +6,13 @@
 
 #include "my_atoi.c"
 
-const char *ARGP_PROGRAM_VERSION = "rcv 0.1.0";
-const char *ARGP_PROGRAM_BUG_ADDRESS = "<mgilmour@maxgmr.ca>";
-static char DOC[] = "An exceedingly simple C program used for quick conversion "
-                    "between radicies.";
-static char ARGS_DOC[] = "[INPUT_NUMBER]";
+const char *argp_program_version = "rcv 0.1.0";
+const char *argp_program_bug_address = "<mgilmour@maxgmr.ca>";
+static char doc[] = "An exceedingly simple C program used for quick conversion\
+                    between radicies.";
+static char args_doc[] = "[INPUT_NUMBER]";
 
-static struct argp_option OPTIONS[] = {
+static struct argp_option options[] = {
     {"dec", 'd', 0, 0, "(Default) output as a decimal number (radix 10)"},
     {"hex", 'h', 0, 0, "Output as a hexadecimal number (radix 16)"},
     {"oct", 'o', 0, 0, "Output as an octal number (radix 8)"},
@@ -82,7 +82,7 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state) {
   return 0;
 }
 
-static struct argp ARGP = {OPTIONS, parse_opt, ARGS_DOC, DOC, 0, 0, 0};
+static struct argp argp = {options, parse_opt, args_doc, doc, 0, 0, 0};
 
 int main(int argc, char *argv[]) {
   struct args args;
@@ -91,7 +91,7 @@ int main(int argc, char *argv[]) {
   args.is_no_newline = false;
   args.input = NULL;
 
-  argp_parse(&ARGP, argc, argv, 0, 0, &args);
+  argp_parse(&argp, argc, argv, 0, 0, &args);
 
   bool ok = true;
   int result = my_atoi(args.input, &ok);
