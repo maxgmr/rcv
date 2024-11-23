@@ -16,13 +16,9 @@ static const int ASCII_UCASE_HEX_END = 72;
 static const int HEX_NUM_OFFSET = 10;
 
 // Convert a single char, representing a numerical element, to an integer.
-// Return 0 if the provided char is not a valid hexadecimal digit.
 //
-// This function is also used to convert decimal and octal chars because decimal
-// and octal character notation is a subset of hexadecimal character notation.
-// It is safe to use in `atoi` because `atoi` checks to make sure that decimal
-// and octal digits are within their respective ranges beforehand.
-static int char_to_i(char c) {
+// Return 0 and set pointer ok to false if value is invalid.
+static int char_to_i(char c, bool *ok) {
   // 0-9
   if ((c >= ASCII_DIGIT_OFFSET) && (c < ASCII_DIGIT_END)) {
     return (int)c - ASCII_DIGIT_OFFSET;
@@ -39,22 +35,17 @@ static int char_to_i(char c) {
   }
 
   // Invalid value. Should be unreachable if function used correctly.
+  *ok = false;
   return 0;
 }
 
 // Convert an ASCII decimal, hexadecimal, or octal string to an integer.
 //
-// Matches the functionality of the standard library `atoi` implementation by
-// returning 0 if the string cannot be parsed as an integer.
+// Return 0 & set ok to false if an error occurs.
 //
 // Exhibits undefined behaviour if the given string goes outside the bounds of
 // the int type.
-//
-// In accordance with our email communications, the signature has been modified
-// from the original question such that this function takes a pointer to a
-// string as a parameter rather than a single char. It also takes in the string
-// as a constant to express that the original string is not modified.
-int my_atoi(const char *s) {
+int my_atoi(const char *s, bool *ok) {
   int result = 0;
   bool is_negative = false;
 
@@ -82,7 +73,21 @@ int my_atoi(const char *s) {
       result *= 0x10;
       // Safe to call `char_to_i` because conditional ensured `isxdigit`,
       // meaning that *s is in the range 0x0-0xF.
-      result += char_to_i(*s++);
+      result += char_to_i(*s++, ok);
+    }
+  }
+
+  // If 0b prefix, then number is binary.
+  else if (s[0] == '0' && ((s[1] == 'b') || (s[1] == 'B'))) {
+    // Advance past prefix
+    s += 2;
+
+    // Parse number
+    while (*s == '0' || *s == '1') {
+      result *= 2;
+      // Safe to call `char_to_i` because conditional ensured *s is 0
+      // or 1.
+      result += char_to_i(*s++, ok);
     }
   }
 
@@ -97,18 +102,24 @@ int my_atoi(const char *s) {
       // Safe to call `char_to_i` because conditional ensured `isdigit`
       // and below upper octal char limit, meaning that *s is not in the
       // ranges 0x8-0xF.
-      result += char_to_i(*s++);
+      result += char_to_i(*s++, ok);
     }
   }
 
   // Number is decimal.
   else {
+
+    // Set ok to false if no digits
+    if (!isdigit(*s)) {
+      *ok = false;
+    }
+
     // Parse number
     while ((*s != '\0') && isdigit(*s)) {
       result *= 10;
       // Safe to call `char_to_i` because conditional ensured `isdigit`,
       // meaning that *s is not in the range 0xA-0xF.
-      result += char_to_i(*s++);
+      result += char_to_i(*s++, ok);
     }
   }
 

@@ -8,8 +8,6 @@ Accept stdin if no args.
 
 Proper error handling.
 
-Convert from binary.
-
 Convert to hex, octal, and binary.
 
 Handle larger values.
