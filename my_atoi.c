@@ -69,7 +69,13 @@ int my_atoi(const char *s, bool *ok) {
     s += 2;
 
     // Parse number
-    while ((*s != '\0') && isxdigit(*s)) {
+    while ((*s != '\0') && (isxdigit(*s) || (*s == '_'))) {
+      // Ignore underscores
+      if (*s == '_') {
+        s++;
+        continue;
+      }
+
       result *= 0x10;
       // Safe to call `char_to_i` because conditional ensured `isxdigit`,
       // meaning that *s is in the range 0x0-0xF.
@@ -83,7 +89,13 @@ int my_atoi(const char *s, bool *ok) {
     s += 2;
 
     // Parse number
-    while (*s == '0' || *s == '1') {
+    while (*s == '0' || *s == '1' || *s == '_') {
+      // Ignore underscores
+      if (*s == '_') {
+        s++;
+        continue;
+      }
+
       result *= 2;
       // Safe to call `char_to_i` because conditional ensured *s is 0
       // or 1.
@@ -101,7 +113,14 @@ int my_atoi(const char *s, bool *ok) {
     }
 
     // Parse number
-    while ((*s != '\0') && isdigit(*s) && ((int)*s < ASCII_OCT_DIGIT_END)) {
+    while ((*s != '\0') &&
+           ((isdigit(*s) && ((int)*s < ASCII_OCT_DIGIT_END)) || (*s == '_'))) {
+      // Ignore underscores
+      if (*s == '_') {
+        s++;
+        continue;
+      }
+
       result *= 010;
       // Safe to call `char_to_i` because conditional ensured `isdigit`
       // and below upper octal char limit, meaning that *s is not in the
@@ -119,7 +138,12 @@ int my_atoi(const char *s, bool *ok) {
     }
 
     // Parse number
-    while ((*s != '\0') && isdigit(*s)) {
+    while ((*s != '\0') && (isdigit(*s) || (*s == '_'))) {
+      if (*s == '_') {
+        s++;
+        continue;
+      }
+
       result *= 10;
       // Safe to call `char_to_i` because conditional ensured `isdigit`,
       // meaning that *s is not in the range 0xA-0xF.
