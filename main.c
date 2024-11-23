@@ -14,15 +14,17 @@ static char doc[] = "An exceedingly simple C program used for quick conversion\
 static char args_doc[] = "[INPUT_NUMBER]";
 
 static struct argp_option options[] = {
-    {"dec", 'd', 0, 0, "(Default) output as a decimal number (radix 10)"},
-    {"hex", 'h', 0, 0, "Output as a hexadecimal number (radix 16)"},
+    {"dec", 'i', 0, 0,
+     "(Default) output as a signed decimal number (radix 10)"},
+    {"dec", 'u', 0, 0, "Output as an unsigned decimal number (radix 10)"},
+    {"hex", 'x', 0, 0, "Output as a hexadecimal number (radix 16)"},
     {"oct", 'o', 0, 0, "Output as an octal number (radix 8)"},
     {"bin", 'b', 0, 0, "Output as a binary number (radix 2)"},
     {"no-newline", 'n', 0, 0, "Omit the line feed at the end of the output"},
     {0}};
 
 struct args {
-  enum { DEC_MODE, HEX_MODE, OCT_MODE, BIN_MODE } mode;
+  enum { I_MODE, U_MODE, HEX_MODE, OCT_MODE, BIN_MODE } mode;
   bool is_no_newline;
   char *input;
 };
@@ -39,11 +41,15 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state) {
   struct args *args = state->input;
 
   switch (key) {
-  case 'd':
-    args->mode = DEC_MODE;
+  case 'i':
+    args->mode = I_MODE;
     break;
 
-  case 'h':
+  case 'u':
+    args->mode = U_MODE;
+    break;
+
+  case 'x':
     args->mode = HEX_MODE;
     break;
 
@@ -94,10 +100,18 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state) {
 
 static struct argp argp = {options, parse_opt, args_doc, doc, 0, 0, 0};
 
+void binary_print(unsigned a) {
+  if (a > 1) {
+    binary_print(a / 2);
+  }
+  printf("%d", a % 2);
+}
+
 int main(int argc, char *argv[]) {
   struct args args;
 
-  args.mode = DEC_MODE;
+  // Default args
+  args.mode = I_MODE;
   args.is_no_newline = false;
   args.input = NULL;
 
@@ -118,6 +132,9 @@ int main(int argc, char *argv[]) {
   }
 
   switch (args.mode) {
+  case (U_MODE):
+    fprintf(stdout, "%u", result);
+    break;
   case (HEX_MODE):
     fprintf(stdout, "0x%X", result);
     break;
@@ -125,7 +142,7 @@ int main(int argc, char *argv[]) {
     fprintf(stdout, "0o%o", result);
     break;
   case (BIN_MODE):
-    fprintf(stdout, "TODO");
+    binary_print(result);
     break;
   default:
     fprintf(stdout, "%d", result);
