@@ -11,5 +11,3 @@ Convert to hex, octal, and binary.
 Interpret as signed or unsigned.
 
 CLI flags.
-
-Allow underscores.
