@@ -102,7 +102,20 @@ int main(int argc, char *argv[]) {
     return 5;
   }
 
-  fprintf(stdout, "%d", result);
+  switch (args.mode) {
+  case (HEX_MODE):
+    fprintf(stdout, "0x%X", result);
+    break;
+  case (OCT_MODE):
+    fprintf(stdout, "0o%o", result);
+    break;
+  case (BIN_MODE):
+    fprintf(stdout, "TODO");
+    break;
+  default:
+    fprintf(stdout, "%d", result);
+    break;
+  }
   if (!args.is_no_newline) {
     fprintf(stdout, "\n");
   }
