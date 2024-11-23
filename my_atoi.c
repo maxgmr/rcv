@@ -91,10 +91,14 @@ int my_atoi(const char *s, bool *ok) {
     }
   }
 
-  // If 0 prefix, then number is octal.
+  // If 0 or 0o prefix, then number is octal.
   else if (s[0] == '0') {
     // Advance past prefix
     s++;
+    // Optional 'o'
+    if (*s == 'o') {
+      s++;
+    }
 
     // Parse number
     while ((*s != '\0') && isdigit(*s) && ((int)*s < ASCII_OCT_DIGIT_END)) {
