@@ -107,8 +107,8 @@ int my_atoi(const char *s, bool *ok) {
   else if (s[0] == '0') {
     // Advance past prefix
     s++;
-    // Optional 'o'
-    if (*s == 'o') {
+    // Optional 'o' or 'O'
+    if ((*s == 'o') || (*s == 'O')) {
       s++;
     }
 

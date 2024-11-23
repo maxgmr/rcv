@@ -1,4 +1,5 @@
 #include <argp.h>
+#include <ctype.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -25,6 +26,14 @@ struct args {
   bool is_no_newline;
   char *input;
 };
+
+void replace_int_prefix_char(char *s, char original, char new) {
+  int len = (int)strlen(s);
+  if ((len > 1) && (s[0] == original) && isdigit(s[1])) {
+    s[0] = new;
+  }
+  return;
+}
 
 static error_t parse_opt(int key, char *arg, struct argp_state *state) {
   struct args *args = state->input;
@@ -59,6 +68,7 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state) {
         fprintf(stderr, "Memory allocation error\n");
         exit(EXIT_FAILURE);
       }
+      replace_int_prefix_char(args->input, 'N', '-');
     } else {
       // Too many arguments
       argp_usage(state);
@@ -90,6 +100,11 @@ int main(int argc, char *argv[]) {
   args.mode = DEC_MODE;
   args.is_no_newline = false;
   args.input = NULL;
+
+  int i;
+  for (i = 0; i < argc; ++i) {
+    replace_int_prefix_char(argv[i], '-', 'N');
+  }
 
   argp_parse(&argp, argc, argv, 0, 0, &args);
 
