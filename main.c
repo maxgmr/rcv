@@ -7,7 +7,7 @@
 
 #include "my_atoi.c"
 
-const char *argp_program_version = "rcv 0.1.0";
+const char *argp_program_version = "rcv 0.2.0";
 const char *argp_program_bug_address = "<mgilmour@maxgmr.ca>";
 static char doc[] = "An exceedingly simple C program used for quick conversion\
                     between radicies.";
@@ -21,11 +21,16 @@ static struct argp_option options[] = {
     {"oct", 'o', 0, 0, "Output as an octal number (radix 8)"},
     {"bin", 'b', 0, 0, "Output as a binary number (radix 2)"},
     {"no-newline", 'n', 0, 0, "Omit the line feed at the end of the output"},
+    {"no-prefix", 'p', 0, 0, "Omit the prefix for hexadecimal, octal, and binary output"},
+    {"coct-prefix", 'c', 0, 0, "Use a C-style octal prefix (leading 0) instead of a\
+        Rust-style octal prefix (leading 0o)"},
     {0}};
 
 struct args {
   enum { I_MODE, U_MODE, HEX_MODE, OCT_MODE, BIN_MODE } mode;
   bool is_no_newline;
+  bool is_no_prefix;
+  bool is_coct_prefix;
   char *input;
 };
 
@@ -63,6 +68,14 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state) {
 
   case 'n':
     args->is_no_newline = true;
+    break;
+
+  case 'p':
+    args->is_no_prefix = true;
+    break;
+
+  case 'c':
+    args->is_coct_prefix = true;
     break;
 
   case ARGP_KEY_ARG:
@@ -113,6 +126,8 @@ int main(int argc, char *argv[]) {
   // Default args
   args.mode = I_MODE;
   args.is_no_newline = false;
+  args.is_no_prefix = false;
+  args.is_coct_prefix = false;
   args.input = NULL;
 
   int i;
@@ -136,12 +151,25 @@ int main(int argc, char *argv[]) {
     fprintf(stdout, "%u", result);
     break;
   case (HEX_MODE):
-    fprintf(stdout, "0x%X", result);
+    if (!args.is_no_prefix) {
+        fprintf(stdout, "0x");
+    }
+    fprintf(stdout, "%X", result);
     break;
   case (OCT_MODE):
-    fprintf(stdout, "0o%o", result);
+    if (!args.is_no_prefix) {
+        if (args.is_coct_prefix) {
+            fprintf(stdout, "0");
+        } else {
+            fprintf(stdout, "0o");
+        }
+    }
+    fprintf(stdout, "%o", result);
     break;
   case (BIN_MODE):
+    if (!args.is_no_prefix) {
+        fprintf(stdout, "0b");
+    }
     binary_print(result);
     break;
   default:
