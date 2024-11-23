@@ -9,7 +9,14 @@ int main(int argc, char *argv[]) {
   bool ok = true;
   if (argc != 2) {
     fprintf(stderr, "%s", HELP_STR);
-    return 1;
+    return 5;
+  }
+
+  int result = my_atoi(argv[1], &ok);
+
+  if (!ok) {
+    fprintf(stderr, "Failed to parse input as number.\n");
+    return 5;
   }
 
   fprintf(stdout, "%d\n", my_atoi(argv[1], &ok));
