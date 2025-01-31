@@ -1,18 +1,18 @@
-BUILD_DIR = bin
-SRC_DIR = src
+BUILDDIR = bin
+SRCDIR = src
 
-PREFIX ?= /usr/local
+DESTDIR ?= /usr
 
 CFLAGS = -Os -Wall -Wextra
 
 build:
-	gcc $(SRC_DIR)/main.c $(CFLAGS) -o $(BUILD_DIR)/main.out
+	gcc $(SRCDIR)/main.c $(CFLAGS) -o $(DESTDIR)/main.out
 
 install:
-	sudo cp $(BUILD_DIR)/main.out $(PREFIX)/bin/rcv
+	sudo cp $(BUILDDIR)/main.out $(PREFIX)/bin/rcv
 
 clean:
-	find $(BUILD_DIR) -type f ! -name '.gitignore' -delete
+	find $(BUILDDIR) -type f ! -name '.gitignore' -delete
 
 uninstall:
-	sudo rm $(PREFIX)/bin/rcv
+	sudo rm $(DESTDIR)/bin/rcv
