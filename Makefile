@@ -9,7 +9,7 @@ build:
 	gcc $(SRCDIR)/main.c $(CFLAGS) -o $(BUILDDIR)/main.out
 
 install:
-	sudo cp $(BUILDDIR)/main.out $(PREFIX)/bin/rcv
+	sudo cp $(BUILDDIR)/main.out $(DESTDIR)/bin/rcv
 
 clean:
 	find $(BUILDDIR) -type f ! -name '.gitignore' -delete
