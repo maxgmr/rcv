@@ -7,7 +7,7 @@
 
 #include "my_atoi.c"
 
-const char *argp_program_version = "rcv 0.2.0";
+const char *argp_program_version = "rcv 0.2.1";
 const char *argp_program_bug_address = "<mgilmour@maxgmr.ca>";
 static char doc[] = "An exceedingly simple C program used for quick conversion\
                     between radicies.";
