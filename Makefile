@@ -9,10 +9,10 @@ build:
 	gcc $(SRCDIR)/main.c $(CFLAGS) -o $(BUILDDIR)/main.out
 
 install:
-	sudo install -Dm755 $(BUILDDIR)/main.out $(DESTDIR)/bin/rcv
+	install -Dm755 $(BUILDDIR)/main.out $(DESTDIR)/bin/rcv
 
 clean:
 	find $(BUILDDIR) -type f ! -name '.gitignore' -delete
 
 uninstall:
-	sudo rm $(DESTDIR)/bin/rcv
+	rm $(DESTDIR)/bin/rcv
