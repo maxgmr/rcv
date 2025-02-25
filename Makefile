@@ -1,7 +1,7 @@
 BUILDDIR = bin
 SRCDIR = src
 
-DESTDIR ?= /usr
+DESTDIR ?= /usr/local
 
 CFLAGS = -Os -Wall -Wextra
 
